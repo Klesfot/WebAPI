@@ -1,16 +1,18 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using WebAPI.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddDbContext<CategoryContext>(b => b.UseInMemoryDatabase("ProductList"));
 builder.Services.AddDbContext<ProductContext>(b => b.UseInMemoryDatabase("ProductList"));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(s =>
+{
+    s.SwaggerDoc("v1", new OpenApiInfo{Title = "WebAPI for products and categories", Version = "v1"});
+});
 
 var app = builder.Build();
 
@@ -18,7 +20,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    //app.UseSwaggerUI();
+    app.UseSwaggerUI(s =>
+    {
+        s.SwaggerEndpoint("v1/swagger.json", "WebAPI for products and categories V1");
+    });
 }
 
 app.UseHttpsRedirection();
