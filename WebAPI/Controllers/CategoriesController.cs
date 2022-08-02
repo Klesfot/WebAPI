@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 
@@ -44,6 +45,24 @@ namespace WebAPI.Controllers
             return category;
         }
 
+        // GET: api/Categories/5/Image
+        [HttpGet("{id}/Image")]
+        public async Task<ActionResult<string>> GetCategoryImage(int id)
+        {
+            if (_context.Categories == null)
+            {
+                return NotFound();
+            }
+            var category = await _context.Categories.FindAsync(id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return category.ImageLink;
+        }
+
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -73,6 +92,26 @@ namespace WebAPI.Controllers
             }
 
             return NoContent();
+        }
+
+        // PATCH: api/Categories/5/Image
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPatch("{id}/image")]
+        public async Task<IActionResult> PatchCategoryImage(int id, [FromBody] JsonPatchDocument<Category> patchEntity)
+        {
+            if (_context.Categories == null)
+            {
+                return NotFound();
+            }
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            patchEntity.ApplyTo(category, ModelState);
+
+            return Ok(category);
         }
 
         // POST: api/Categories
