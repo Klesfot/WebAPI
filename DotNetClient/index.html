@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+</head>
+<body>
+
+<div>
+    <h2>Products</h2>
+    <ul id="products"></ul>
+</div>
+<div>
+    <h2>Categories</h2>
+    <ul id="categories"></ul>
+</div>
+
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+<script>
+    var uri = 'localhost:7150/api/products/';
+
+    $(document).ready(function () {
+        // Send an AJAX request
+        $.getJSON("https://localhost:7150/api/products/")
+            .done(function (data) {
+                // On success, 'data' contains a list of products.
+                $.each(data, function (key, product) {
+                    // Add a list item for the product.
+                    $('<li>', { text: formatProduct(product) }).appendTo($('#products'));
+                });
+            });
+        $.getJSON("https://localhost:7150/api/categories/")
+            .done(function (data) {
+                // On success, 'data' contains a list of products.
+                $.each(data, function (key, category) {
+                    // Add a list item for the product.
+                    $('<li>', { text: formatCategory(category) }).appendTo($('#categories'));
+                });
+            });
+    });
+
+    function formatProduct(item) {
+        return 'Id: <' + item.id + '> Product name: <' + item.productName + '> Category id: <' + item.categoryId + '> Unit price: <' + item.unitPrice + '> Units in stock: <' + item.unitsInStock + '>';
+    }
+    function formatCategory(item) {
+        return 'Id: <' + item.id + '> Category name: <' + item.categoryName + '> Description: <' + item.description + '> Image link: <' + item.imageLink + '>';
+    }
+</script>
+</body>
+</html>
